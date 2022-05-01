@@ -1,10 +1,9 @@
 import { calculate_data } from "./calculate_data.js";
-
 export class LayoutManager {
   // the constructor
   constructor() {
     this.init_inputs();
-    this.init_outputs();
+    this.init_or_update_outputs();
   }
 
   init_inputs() {
@@ -46,9 +45,7 @@ export class LayoutManager {
               // Even if the value isn't impacted by what is being updated
               // Maybe should consider figuring out what element is being updated and only recalc
               // relevant fields, but that feels difficult to track
-              this.set_total_cash();
-              this.set_amount_per_bot();
-              this.set_extra_cash();
+              this.init_or_update_outputs();
             }
           },
           200,
@@ -59,10 +56,30 @@ export class LayoutManager {
     });
   }
 
-  init_outputs() {
+  init_or_update_outputs() {
     this.set_total_cash();
     this.set_amount_per_bot();
     this.set_extra_cash();
+
+    // save all the values
+
+    this.save_all_values();
+  }
+
+  save_all_values() {
+    // Disabled for now.
+    // const free_cash = this.get_total_cash();
+    // const cash_in_bots = this.get_total_bots();
+    // const base_ordersize = this.get_base_ordersize();
+    // const safety_ordersize = this.get_safety_ordersize();
+    // const safety_ordersize_scaling = this.get_safety_ordersize_scaling();
+    // const max_safety_orders = this.get_max_safety_orders();
+    // Store.set("free_cash", free_cash);
+    // Store.set("cash_in_bots", cash_in_bots);
+    // Store.set("base_ordersize", base_ordersize);
+    // Store.set("safety_ordersize", safety_ordersize);
+    // Store.set("safety_ordersize_scaling", safety_ordersize_scaling);
+    // Store.set("max_safety_orders", max_safety_orders);
   }
 
   set_total_cash() {
@@ -88,11 +105,27 @@ export class LayoutManager {
 
   get_amount_per_bot() {
     return calculate_data.amount_per_bot(
-      Number(document.getElementById("baseordersizeinput").value),
-      Number(document.getElementById("safetyordersizeinput").value),
-      Number(document.getElementById("safetyordersizescalinginput").value),
-      Number(document.getElementById("maxsafetyordersinput").value)
+      this.get_base_ordersize(),
+      this.get_safety_ordersize(),
+      this.get_safety_ordersize_scaling(),
+      this.get_max_safety_orders()
     );
+  }
+
+  get_base_ordersize() {
+    return Number(document.getElementById("baseordersizeinput").value);
+  }
+
+  get_safety_ordersize() {
+    return Number(document.getElementById("safetyordersizeinput").value);
+  }
+
+  get_safety_ordersize_scaling() {
+    return Number(document.getElementById("safetyordersizescalinginput").value);
+  }
+
+  get_max_safety_orders() {
+    return Number(document.getElementById("maxsafetyordersinput").value);
   }
 
   set_extra_cash() {

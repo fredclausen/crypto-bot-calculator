@@ -51,12 +51,20 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
 
-  mainWindow.on("resize", () => {
-    // The event doesn't pass us the window size, so we call the `getBounds` method which returns an object with
-    // the height, width, and x and y coordinates.
-    let { x, y, width, height } = mainWindow.getBounds();
-    // Now that we have them, save them using the `set` method.
-    store.set("windowBounds", { x, y, width, height });
+  mainWindow.on("resized", () => {
+    save_bounds();
+  });
+
+  mainWindow.on("closed", () => {
+    // Dereference the window object, usually you would store windows
+    // in an array if your app supports multi windows, this is the time
+    // when you should delete the corresponding element.
+    mainWindow = null;
+    save_bounds();
+  });
+
+  mainWindow.on("moved", () => {
+    save_bounds();
   });
 });
 
@@ -69,3 +77,11 @@ app.on("window-all-closed", function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+function save_bounds() {
+  // The event doesn't pass us the window size, so we call the `getBounds` method which returns an object with
+  // the height, width, and x and y coordinates.
+  let { x, y, width, height } = mainWindow.getBounds();
+  // Now that we have them, save them using the `set` method.
+  store.set("windowBounds", { x, y, width, height });
+}
