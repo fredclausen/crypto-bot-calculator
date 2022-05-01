@@ -2,12 +2,25 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow } = require("electron");
 const path = require("path");
+const Store = require("./store.js");
+let mainWindow; //do this so that the window object doesn't get GC'd
+
+// First instantiate the class
+const store = new Store({
+  // We'll call our data file 'user-preferences'
+  configName: "user-preferences",
+  defaults: {
+    // 800x600 is the default size of our window
+    windowBounds: { width: 800, height: 600 },
+  },
+});
 
 function createWindow() {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+  let { width, height } = store.get("windowBounds");
+  mainWindow = new BrowserWindow({
+    width: width,
+    height: height,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
@@ -29,6 +42,14 @@ app.whenReady().then(() => {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  });
+
+  mainWindow.on("resize", () => {
+    // The event doesn't pass us the window size, so we call the `getBounds` method which returns an object with
+    // the height, width, and x and y coordinates.
+    let { width, height } = mainWindow.getBounds();
+    // Now that we have them, save them using the `set` method.
+    store.set("windowBounds", { width, height });
   });
 });
 
