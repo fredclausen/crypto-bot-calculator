@@ -2,21 +2,21 @@
   "name": "crypto-bot-calculator",
   "version": "0.0.1",
   "description": "A simple electron app that will allow you to simulate different DCA bot configurations",
-  "main": "dist/index.js",
+  "main": "src/index.js",
   "repository": {
     "type": "git",
     "url": "http://www.github.com/fredclausen/crypto-bot-calculator"
   },
   "scripts": {
-    "compile": "tsc && copyfiles -f src/index.html dist",
-    "start": "npm run compile && electron-forge start",
-    "package": "npm run compile && electron-forge package",
-    "make": "npm run compile && electron-forge make"
+    "compile": "tsc && copyfiles -f src/index.html dist && copyfiles src/*.js dist",
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "author": "Fred Clausen",
   "license": "MIT",
   "directories": {
-    "app": "./src"
+    "app": "./dist"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.63",
@@ -25,8 +25,7 @@
     "@electron-forge/maker-squirrel": "^6.0.0-beta.63",
     "@electron-forge/maker-zip": "^6.0.0-beta.63",
     "copyfiles": "^2.4.1",
-    "electron": "^18.2.0",
-    "typescript": "^4.6.4"
+    "electron": "^18.2.0"
   },
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0"

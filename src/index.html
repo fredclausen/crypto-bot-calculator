@@ -3,15 +3,15 @@
   <head>
     <meta charset="UTF-8">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; object-src 'self'">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; object-src 'self'">
     <title>Crypto Bot Calculator</title>
     <link rel="stylesheet" href="main.css" type="text/css">
   </head>
   <body>
     <div class="outside-container">
       <div class="item totalfreecash"><label for="totalfreecashinput">Free Cash</label></div>
-      <div class="item totalfreecashinput"><input type="text" id="totalfreecashinput"></div>
+      <div class="item totalfreecashinput"><input type="number" id="totalfreecashinput" value="0.0" min="0.0" step="0.1"></div>
 
       <div class="item output">
         <div class="output-container">
@@ -26,22 +26,23 @@
       </div>
 
       <div class="item totalcashinbots"><label for="totalcashinbotsinput">Total Cash In Bots</label></div>
-      <div class="item totalcashinbotsinput"><input type="text" id="totalcashinbotsinput"></div>
+      <div class="item totalcashinbotsinput"><input type="number" id="totalcashinbotsinput" value="0"></div>
 
       <div class="item numberofbots"><label for="numberofbotsinput">Number of Bots</label></div>
-      <div class="item numberofbotsinput"><input type="text" id="numberofbotsinput"></div>
+      <div class="item numberofbotsinput"><input type="number" id="numberofbotsinput" value="0"></div>
 
       <div class="item baseordersize"><label for="baseordersizeinput">Base Order Size</label></div>
-      <div class="item baseordersizeinput"><input type="text" id="baseordersizeinput"></div>
+      <div class="item baseordersizeinput"><input type="number" id="baseordersizeinput" value="0"></div>
 
       <div class="item safetyordersize"><label for="safetyordersizeinput">Safety Order Size</label></div>
-      <div class="item safetyordersizeinput"><input type="text" id="safetyordersizeinput"></div>
+      <div class="item safetyordersizeinput"><input type="number" id="safetyordersizeinput" value="0"></div>
 
       <div class="item safetyordersizescaling"><label for="safetyordersizescaling">Safety Order Scaling</label></div>
-      <div class="item safetyordersizescalinginput"><input type="text" id="safetyordersizescalinginput"></div>
+      <div class="item safetyordersizescalinginput"><input type="number" id="safetyordersizescalinginput" value="0"></div>
 
       <div class="item maxsafetyorders"><label for="maxsafetyordersinput">Max Safety Orders</label></div>
-      <div class="item maxsafetyordersinput"><input type="text" id="maxsafetyordersinput"></div>
-</div>
+      <div class="item maxsafetyordersinput"><input type="number" id="maxsafetyordersinput" value="0"></div>
+    </div>
+    <script src="./cryptobot.js" type="module"></script>
   </body>
 </html>
