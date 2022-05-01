@@ -9,10 +9,8 @@ body {
 
 /* Each item in the grid contains numbers */
 .item {
-  /* Center the contents of the grid items. Making each grid item a Flex Container */
-  display: flex;
   /* Horizontal and Vertical centering */
-  justify-content: center;
+  display: flex;
   align-items: center;
   border: 2px solid hsl(208, 26%, 24%);
   border-radius: 5px;
@@ -21,6 +19,7 @@ body {
   font-weight: bold;
   background-color: hsl(210, 26%, 18%);
   color: hsl(208, 21%, 76%);
+  justify-content: center;
 }
 
 .outside-container {
@@ -40,6 +39,18 @@ body {
 
 .output {
   grid-row: span 7;
+}
+
+.red {
+  color: hsl(0, 100%, 50%);
+}
+
+.green {
+  color: hsl(120, 100%, 50%);
+}
+
+item:first-child {
+  align-self: center;
 }
 
 input[type="number"] {
