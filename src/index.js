@@ -11,14 +11,21 @@ const store = new Store({
   configName: "user-preferences",
   defaults: {
     // 800x600 is the default size of our window
-    windowBounds: { width: 800, height: 600 },
+    windowBounds: {
+      x: 0,
+      y: 0,
+      width: 800,
+      height: 600,
+    },
   },
 });
 
 function createWindow() {
   // Create the browser window.
-  let { width, height } = store.get("windowBounds");
+  let { x, y, width, height } = store.get("windowBounds");
   mainWindow = new BrowserWindow({
+    x: x,
+    y: y,
     width: width,
     height: height,
     webPreferences: {
@@ -47,9 +54,9 @@ app.whenReady().then(() => {
   mainWindow.on("resize", () => {
     // The event doesn't pass us the window size, so we call the `getBounds` method which returns an object with
     // the height, width, and x and y coordinates.
-    let { width, height } = mainWindow.getBounds();
+    let { x, y, width, height } = mainWindow.getBounds();
     // Now that we have them, save them using the `set` method.
-    store.set("windowBounds", { width, height });
+    store.set("windowBounds", { x, y, width, height });
   });
 });
 
