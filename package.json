@@ -18,9 +18,6 @@
   },
   "author": "Fred Clausen",
   "license": "MIT",
-  "directories": {
-    "app": "./src"
-  },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.63",
     "@electron-forge/maker-deb": "^6.0.0-beta.63",
