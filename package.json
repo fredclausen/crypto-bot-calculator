@@ -11,7 +11,10 @@
     "compile": "tsc && copyfiles -f src/index.html dist && copyfiles src/*.js dist",
     "start": "electron-forge start",
     "package": "electron-forge package",
-    "make": "electron-forge make"
+    "make": "electron-forge make",
+    "postinstall": "electron-builder install-app-deps",
+    "build": "electron-builder --mac --windows --linux",
+    "release": "electron-builder --mac --windows --linux --publish always"
   },
   "author": "Fred Clausen",
   "license": "MIT",
@@ -25,10 +28,27 @@
     "@electron-forge/maker-squirrel": "^6.0.0-beta.63",
     "@electron-forge/maker-zip": "^6.0.0-beta.63",
     "copyfiles": "^2.4.1",
-    "electron": "^18.2.0"
+    "electron": "^18.2.0",
+    "electron-builder": "^23.0.3"
   },
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0"
+  },
+  "build": {
+    "appId": "com.fredclausen.crypto_bot_calculator",
+    "productName": "Crypto Bot Calculator",
+    "mac": {
+      "category": "public.app-category.lifestyle"
+    },
+    "dmg": {
+      "icon": false
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Office"
+    }
   },
   "config": {
     "forge": {
