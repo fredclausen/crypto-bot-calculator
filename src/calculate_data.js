@@ -8,7 +8,7 @@ export const calculate_data = {
   },
 
   total_cash: function (free_cash = 0.0, cash_in_bots = 0.0) {
-    return this.normalize_numbers(free_cash || 0 + cash_in_bots || 0);
+    return this.normalize_numbers(free_cash + cash_in_bots);
   },
 
   amount_per_bot: function (
@@ -31,5 +31,16 @@ export const calculate_data = {
       previous_safety_order *= safety_order_scaling;
     }
     return this.normalize_numbers(base_order_size + safety_order_usage);
+  },
+
+  extra_bots(total_cash = 0.0, amount_per_bot = 0.0, total_bots = 0) {
+    if (total_cash <= 0.0 || amount_per_bot <= 0.0) {
+      return 0;
+    }
+
+    const total_bots_calculated = total_cash / total_bots / amount_per_bot;
+    return total_bots_calculated < 1
+      ? 0
+      : this.normalize_numbers_int(total_bots_calculated);
   },
 };

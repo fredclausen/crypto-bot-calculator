@@ -48,7 +48,7 @@ export class LayoutManager {
               this.init_or_update_outputs();
             }
           },
-          200,
+          500,
           element.target.value,
           element.target.id
         );
@@ -60,6 +60,7 @@ export class LayoutManager {
     this.set_total_cash();
     this.set_amount_per_bot();
     this.set_extra_cash();
+    this.set_possible_extra_bots();
 
     // save all the values
 
@@ -82,6 +83,29 @@ export class LayoutManager {
     // Store.set("max_safety_orders", max_safety_orders);
   }
 
+  set_possible_extra_bots() {
+    const extra_cash = this.get_total_cash();
+    const amount_per_bot = this.get_amount_per_bot();
+    const total_bots = this.get_total_bots();
+    const possible_bots = calculate_data.extra_bots(
+      extra_cash,
+      amount_per_bot,
+      total_bots
+    );
+
+    document.getElementById("possibleextrabotoutput").innerHTML = possible_bots;
+
+    if (possible_bots <= 0) {
+      document
+        .getElementById("possibleextrabotoutput")
+        .classList.remove("green");
+      document.getElementById("possibleextrabotoutput").classList.add("red");
+    } else {
+      document.getElementById("possibleextrabotoutput").classList.remove("red");
+      document.getElementById("possibleextrabotoutput").classList.add("green");
+    }
+  }
+
   set_total_cash() {
     document.getElementById("totalcashoutput").innerHTML =
       "$" + this.get_total_cash();
@@ -94,8 +118,8 @@ export class LayoutManager {
 
   get_total_cash() {
     return calculate_data.total_cash(
-      Number(document.getElementById("totalfreecashinput").value),
-      Number(document.getElementById("totalcashinbotsinput").value)
+      this.get_free_cash(),
+      this.get_cash_in_bots()
     );
   }
 
@@ -110,6 +134,14 @@ export class LayoutManager {
       this.get_safety_ordersize_scaling(),
       this.get_max_safety_orders()
     );
+  }
+
+  get_free_cash() {
+    return Number(document.getElementById("totalfreecashinput").value);
+  }
+
+  get_cash_in_bots() {
+    return Number(document.getElementById("totalcashinbotsinput").value);
   }
 
   get_base_ordersize() {
