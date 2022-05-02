@@ -10,12 +10,11 @@ const store = new Store({
   // We'll call our data file 'user-preferences'
   configName: "user-preferences",
   defaults: {
-    // 800x600 is the default size of our window
     windowBounds: {
       x: 0,
       y: 0,
-      width: 800,
-      height: 600,
+      width: 930,
+      height: 345,
     },
   },
 });
@@ -23,21 +22,26 @@ const store = new Store({
 function createWindow() {
   // Create the browser window.
   let { x, y, width, height } = store.get("windowBounds");
+  height = height > 370 ? height : 370;
+  width = width > 930 ? width : 930;
+  const minHeight = 370;
+  const minWidth = 930;
   mainWindow = new BrowserWindow({
     x: x,
     y: y,
     width: width,
     height: height,
+    minWidth: minWidth,
+    minHeight: minHeight,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
   });
-
   // and load the index.html of the app.
   mainWindow.loadFile("src/index.html");
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
 }
 
 // This method will be called when Electron has finished
@@ -45,6 +49,7 @@ function createWindow() {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   createWindow();
+  save_bounds();
   app.on("activate", function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
@@ -78,6 +83,12 @@ app.on("window-all-closed", function () {
 // code. You can also put them in separate files and require them here.
 
 function save_bounds() {
+  // TODO: There is a bug here with multiple monitors
+  // At least on the macOS
+  // Window size exceeding what can be displayed on the main (??? maybe smallest)
+  // monitor gets loaded as some random size that will fit on the main monitor
+  // On app reload, anyway
+
   // The event doesn't pass us the window size, so we call the `getBounds` method which returns an object with
   // the height, width, and x and y coordinates.
   let { x, y, width, height } = mainWindow.getBounds();
