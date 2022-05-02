@@ -1,5 +1,16 @@
 * {
   box-sizing: border-box;
+  font-size: 1em;
+}
+
+:root {
+  --light-border: hsl(208, 26%, 24%);
+  --light-background: hsl(210, 26%, 18%);
+  --light-text: hsl(208, 21%, 76%);
+  --dark-background: hsl(208, 26%, 13%);
+  --dark-input: hsl(208, 27%, 11%)
+  --green: hsl(120, 100%, 50%);
+  --red: hsl(0, 100%, 50%);
 }
 
 body {
@@ -12,41 +23,54 @@ body {
   /* Horizontal and Vertical centering */
   display: flex;
   align-items: center;
-  border: 2px solid hsl(208, 26%, 24%);
+  border: 2px solid var(--light-border);
   border-radius: 5px;
-  font-size: 0.75em;
   font-family: sans-serif;
   font-weight: bold;
-  background-color: hsl(210, 26%, 18%);
-  color: hsl(208, 21%, 76%);
-  justify-content: center;
+  background-color: var(--light-background);
+  color: var(--light-text);
+  justify-content: flex-start;
+  min-height: 2em;
+  max-height: 2em;
+  padding-left: 0.3rem;
 }
 
 .outside-container {
   display: grid;
   grid-template-columns: 20% 20% auto;
   grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-  grid-gap: 1rem;
-  background: hsl(208, 26%, 13%);
+  grid-gap: 0.5rem;
+  background: var(--dark-background);
+  padding: 1rem;
+  border-radius: 20px;
+  border: 2px solid var(--light-border);
 }
 
 .output-container {
   display: grid;
   width: 98%;
-  grid-template-columns: 20% auto;
-  grid-template-rows: repeat(3, 1fr);
+  min-height: 100%;
+  grid-template-columns: 30% auto;
+  grid-template-rows: 2rem 2rem 2rem;
+  grid-gap: 0.5rem;
+}
+
+.item.output {
+  background-color: var(--dark-background);
+  padding: 0.5rem;
 }
 
 .output {
   grid-row: span 7;
+  min-height: 100%;
 }
 
 .red {
-  color: hsl(0, 100%, 50%);
+  color: var(--red);
 }
 
 .green {
-  color: hsl(120, 100%, 50%);
+  color: var(--green);
 }
 
 item:first-child {
@@ -56,13 +80,26 @@ item:first-child {
 input[type="number"] {
   width: 100%;
   height: 100%;
-  border: 2px hsl(208, 21%, 76%);
-  background-color: hsl(208, 27%, 11%);
-  color: hsl(208, 21%, 76%);
+  border: 2px var(--light-text);
+  background-color: var(--dark-input);
+  color: var(--light-text);
   font-size: 1em;
   font-family: sans-serif;
   font-weight: bold;
   text-align: left;
   padding-left: 1em;
   padding-right: 1em;
+}
+
+/* Remove number input arrows */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
 }
