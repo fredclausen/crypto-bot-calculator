@@ -20,6 +20,10 @@ export class LayoutManager {
         element.id !== "numberofbotsinput"
           ? calculate_data.normalize_numbers(Number(element.value))
           : calculate_data.normalize_numbers_int(Number(element.value));
+      element.addEventListener("dblclick", (element) => {
+        element.focus();
+        element.select();
+      });
       element.addEventListener("keyup", (element) => {
         // Change the input to always be the correct number of decimals
         // everything but Number of total safety orders and number of bots should be to two decimal places
@@ -50,7 +54,7 @@ export class LayoutManager {
               this.init_or_update_outputs();
             }
           },
-          500,
+          1500,
           element.target.value,
           element.target.id
         );
