@@ -94,9 +94,6 @@ export class LayoutManager {
       safety_ordersize_scaling: this.get_safety_ordersize_scaling(),
       max_safety_orders: this.get_max_safety_orders(),
     };
-
-    console.log(settings);
-
     window.electronAPI.savesettings(settings);
   }
 

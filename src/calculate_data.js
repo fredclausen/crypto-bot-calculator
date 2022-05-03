@@ -38,7 +38,9 @@ export const calculate_data = {
       return 0;
     }
 
-    const total_bots_calculated = total_cash / total_bots / amount_per_bot;
+    const free_cash = total_cash - amount_per_bot * total_bots;
+    const total_bots_calculated = free_cash / amount_per_bot;
+
     return total_bots_calculated < 1
       ? 0
       : this.normalize_numbers_int(total_bots_calculated);
