@@ -1,5 +1,11 @@
 // preload.js
 
+const { contextBridge, ipcRenderer } = require("electron");
+
+contextBridge.exposeInMainWorld("electronAPI", {
+  savesettings: (settings) => ipcRenderer.send("savesettings", settings),
+});
+
 // All of the Node.js APIs are available in the preload process.
 // It has the same sandbox as a Chrome extension.
 window.addEventListener("DOMContentLoaded", () => {

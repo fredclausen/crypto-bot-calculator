@@ -1,6 +1,6 @@
 // index.js
 // Modules to control application life and create native browser window
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const Store = require("./store.js");
 let mainWindow; //do this so that the window object doesn't get GC'd
@@ -26,6 +26,8 @@ function createWindow() {
   width = width > 930 ? width : 930;
   const minHeight = 370;
   const minWidth = 930;
+
+  // Init the window
   mainWindow = new BrowserWindow({
     x: x,
     y: y,
@@ -35,13 +37,24 @@ function createWindow() {
     minHeight: minHeight,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
+      nodeIntegration: true,
+      nodeIntegrationInWorker: true,
+      nodeIntegrationInSubFrames: true,
+      enableRemoteModule: true,
+      contextIsolation: true, //required flag
     },
+  });
+
+  // Open up the IPC listener
+  ipcMain.on("savesettings", (event, settings) => {
+    console.log(settings);
+    store.set("user_input", settings);
   });
   // and load the index.html of the app.
   mainWindow.loadFile("src/index.html");
 
   // Open the DevTools.
-  //mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 }
 
 // This method will be called when Electron has finished

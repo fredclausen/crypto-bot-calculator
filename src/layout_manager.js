@@ -1,7 +1,9 @@
 import { calculate_data } from "./calculate_data.js";
+
 export class LayoutManager {
   // the constructor
   constructor() {
+    this.load_all_values();
     this.init_inputs();
     this.init_or_update_outputs();
   }
@@ -67,20 +69,35 @@ export class LayoutManager {
     this.save_all_values();
   }
 
+  load_all_values() {
+    // const free_cash = this.store.get("free_cash");
+    // const cash_in_bots = this.store.get("cash_in_bots");
+    // const base_ordersize = this.store.get("base_ordersize");
+    // const safety_ordersize = this.store.get("safety_ordersize");
+    // const safety_ordersize_scaling = this.store.get("safety_ordersize_scaling");
+    // const max_safety_orders = this.store.get("max_safety_orders");
+    // document.getElementById("totalfreecashinput").value = free_cash;
+    // document.getElementById("numberofbotsinput").value = cash_in_bots;
+    // document.getElementById("baseordersizeinput").value = base_ordersize;
+    // document.getElementById("safetyordersizeinput").value = safety_ordersize;
+    // document.getElementById("safetyordersizeinput").value =
+    //   safety_ordersize_scaling;
+    // document.getElementById("maxsafetyordersinput").value = max_safety_orders;
+  }
+
   save_all_values() {
-    // Disabled for now.
-    // const free_cash = this.get_total_cash();
-    // const cash_in_bots = this.get_total_bots();
-    // const base_ordersize = this.get_base_ordersize();
-    // const safety_ordersize = this.get_safety_ordersize();
-    // const safety_ordersize_scaling = this.get_safety_ordersize_scaling();
-    // const max_safety_orders = this.get_max_safety_orders();
-    // Store.set("free_cash", free_cash);
-    // Store.set("cash_in_bots", cash_in_bots);
-    // Store.set("base_ordersize", base_ordersize);
-    // Store.set("safety_ordersize", safety_ordersize);
-    // Store.set("safety_ordersize_scaling", safety_ordersize_scaling);
-    // Store.set("max_safety_orders", max_safety_orders);
+    const settings = {
+      free_cash: Number(this.get_total_cash()),
+      cash_in_bots: this.get_total_bots(),
+      base_ordersize: this.get_base_ordersize(),
+      safety_ordersize: this.get_safety_ordersize(),
+      safety_ordersize_scaling: this.get_safety_ordersize_scaling(),
+      max_safety_orders: this.get_max_safety_orders(),
+    };
+
+    console.log(settings);
+
+    window.electronAPI.savesettings(settings);
   }
 
   set_possible_extra_bots() {
