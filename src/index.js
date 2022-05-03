@@ -47,7 +47,6 @@ function createWindow() {
 
   // Open up the IPC listener
   ipcMain.on("savesettings", (event, settings) => {
-    console.log(settings);
     store.set("user_input", settings);
   });
   // and load the index.html of the app.
