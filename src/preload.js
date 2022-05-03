@@ -4,6 +4,7 @@ const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("electronAPI", {
   savesettings: (settings) => ipcRenderer.send("savesettings", settings),
+  getsettings: () => ipcRenderer.invoke("getsettings"),
 });
 
 // All of the Node.js APIs are available in the preload process.

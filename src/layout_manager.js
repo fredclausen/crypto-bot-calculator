@@ -69,30 +69,72 @@ export class LayoutManager {
     this.save_all_values();
   }
 
-  load_all_values() {
-    // const free_cash = this.store.get("free_cash");
-    // const cash_in_bots = this.store.get("cash_in_bots");
-    // const base_ordersize = this.store.get("base_ordersize");
-    // const safety_ordersize = this.store.get("safety_ordersize");
-    // const safety_ordersize_scaling = this.store.get("safety_ordersize_scaling");
-    // const max_safety_orders = this.store.get("max_safety_orders");
-    // document.getElementById("totalfreecashinput").value = free_cash;
-    // document.getElementById("numberofbotsinput").value = cash_in_bots;
-    // document.getElementById("baseordersizeinput").value = base_ordersize;
-    // document.getElementById("safetyordersizeinput").value = safety_ordersize;
-    // document.getElementById("safetyordersizeinput").value =
-    //   safety_ordersize_scaling;
-    // document.getElementById("maxsafetyordersinput").value = max_safety_orders;
+  async load_all_values() {
+    const settings = await window.electronAPI.getsettings();
+    console.log(settings);
+    this.set_total_free_cash(
+      calculate_data.normalize_numbers(settings.free_cash)
+    );
+    this.set_total_cash_in_bots(
+      calculate_data.normalize_numbers(settings.cash_in_bots)
+    );
+    this.set_number_of_bots(
+      calculate_data.normalize_numbers_int(settings.num_bots)
+    );
+    this.set_base_order_size(
+      calculate_data.normalize_numbers(settings.base_ordersize)
+    );
+    this.set_safety_ordersize(
+      calculate_data.normalize_numbers(settings.safety_ordersize)
+    );
+    this.set_safety_order_size_scaling(
+      calculate_data.normalize_numbers(settings.safety_ordersize_scaling)
+    );
+    document.getElementById("maxsafetyordersinput").value =
+      calculate_data.normalize_numbers_int(settings.max_safety_orders);
+
+    this.init_or_update_outputs();
+  }
+
+  set_total_free_cash(total_cash) {
+    document.getElementById("totalfreecashinput").value = total_cash;
+  }
+
+  set_total_cash_in_bots(cash_in_bots) {
+    document.getElementById("totalcashinbotsinput").value = cash_in_bots;
+  }
+
+  set_number_of_bots(number_of_bots) {
+    document.getElementById("numberofbotsinput").value = number_of_bots;
+  }
+
+  set_base_order_size(base_order_size) {
+    document.getElementById("baseordersizeinput").value = base_order_size;
+  }
+
+  set_safety_ordersize(safety_ordersize) {
+    document.getElementById("safetyordersizeinput").value = safety_ordersize;
+  }
+
+  set_safety_order_size_scaling(safety_order_size_scaling) {
+    document.getElementById("safetyordersizescalinginput").value =
+      safety_order_size_scaling;
+  }
+
+  set_max_safety_ordersize(max_safety_ordersize) {
+    document.getElementById("maxsafetyordersinput").value =
+      max_safety_ordersize;
   }
 
   save_all_values() {
     const settings = {
-      free_cash: Number(this.get_total_cash()),
-      cash_in_bots: this.get_total_bots(),
+      free_cash: Number(this.get_free_cash()),
+      cash_in_bots: this.get_cash_in_bots(),
       base_ordersize: this.get_base_ordersize(),
       safety_ordersize: this.get_safety_ordersize(),
       safety_ordersize_scaling: this.get_safety_ordersize_scaling(),
       max_safety_orders: this.get_max_safety_orders(),
+      num_bots: this.get_total_bots(),
     };
     window.electronAPI.savesettings(settings);
   }

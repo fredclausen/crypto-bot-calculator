@@ -16,6 +16,15 @@ const store = new Store({
       width: 930,
       height: 345,
     },
+    user_input: {
+      free_cash: 0,
+      cash_in_bots: 0,
+      num_bots: 1,
+      base_ordersize: 0,
+      safety_ordersize: 0,
+      safety_ordersize_scaling: 1,
+      max_safety_orders: 5,
+    },
   },
 });
 
@@ -49,11 +58,21 @@ function createWindow() {
   ipcMain.on("savesettings", (event, settings) => {
     store.set("user_input", settings);
   });
+
+  ipcMain.handle("getsettings", async () => {
+    return store.get("user_input");
+  });
+
   // and load the index.html of the app.
   mainWindow.loadFile("src/index.html");
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
+}
+
+async function get_settings() {
+  const settings = await store.get("user_input");
+  return settings;
 }
 
 // This method will be called when Electron has finished
