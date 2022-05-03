@@ -21,8 +21,8 @@ export class LayoutManager {
           ? calculate_data.normalize_numbers(Number(element.value))
           : calculate_data.normalize_numbers_int(Number(element.value));
       element.addEventListener("dblclick", (element) => {
-        element.focus();
-        element.select();
+        element.target.focus();
+        element.target.select();
       });
       element.addEventListener("keyup", (element) => {
         // Change the input to always be the correct number of decimals
