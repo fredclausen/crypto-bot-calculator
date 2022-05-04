@@ -1,5 +1,7 @@
 import { calculate_data } from "./calculate_data.js";
 
+// TODO: Lots of variable name mismatches make it hard to track
+// Stuff. Go through and make everything consistent
 export class LayoutManager {
   // the constructor
   separator = this.getDecimalSeparator();
