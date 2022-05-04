@@ -1,6 +1,6 @@
 {
   "name": "crypto-bot-calculator",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A simple electron app that will allow you to simulate different DCA bot configurations",
   "main": "src/index.js",
   "repository": {
