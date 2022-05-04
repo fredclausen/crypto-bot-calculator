@@ -137,10 +137,15 @@ export class LayoutManager {
   }
 
   init_or_update_outputs() {
+    // TODO: Get all of the input values and pass them in to these functions
+    // That was we only walk the DOM tree once to get the values, and then don't have to
+    // Do it every single time we want to update the outputs
+
     this.set_total_cash();
     this.set_amount_per_bot();
     this.set_extra_cash();
     this.set_possible_extra_bots();
+    this.set_extra_possible_sos();
 
     // save all the values
 
@@ -260,6 +265,28 @@ export class LayoutManager {
   set_amount_per_bot() {
     document.getElementById("cashusedperbotoutput").innerHTML =
       "$" + this.get_amount_per_bot();
+  }
+
+  set_extra_possible_sos() {
+    const extra_cash = this.get_total_cash();
+    const base_ordersize = this.get_base_ordersize();
+    const safety_ordersize = this.get_safety_ordersize();
+    const max_safety_orders = this.get_max_safety_orders();
+    const safety_order_scaling = this.get_safety_ordersize_scaling();
+    const num_bots = this.get_total_bots();
+    const possible_sos = calculate_data.get_possible_extra_sos(
+      extra_cash,
+      base_ordersize,
+      safety_ordersize,
+      safety_order_scaling,
+      max_safety_orders,
+      num_bots
+    );
+
+    document.getElementById("possibleextrasossoutput").innerHTML = possible_sos;
+
+    if (possible_sos <= 0) this.set_element_red("possibleextrasossoutput");
+    else this.set_element_green("possibleextrasossoutput");
   }
 
   get_total_cash() {

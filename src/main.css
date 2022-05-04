@@ -51,7 +51,7 @@ body {
   width: 98%;
   min-height: 100%;
   grid-template-columns: 60% auto;
-  grid-template-rows: 2rem 2rem 2rem 2rem;
+  grid-template-rows: 2rem 2rem 2rem 2rem 2rem;
   grid-gap: 0.5rem;
 }
 

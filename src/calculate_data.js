@@ -87,4 +87,47 @@ export const calculate_data = {
       ? this.normalize_numbers(percentage_of_sos_covered)
       : this.normalize_numbers(100);
   },
+
+  get_possible_extra_sos(
+    total_cash,
+    base_order_size,
+    safety_order_size,
+    safety_order_scaling,
+    max_safety_orders,
+    num_bots
+  ) {
+    for (let arg of arguments) {
+      if (arg === undefined || arg === null || arg === 0) {
+        return 0;
+      }
+    }
+
+    if (
+      this.amount_per_bot(
+        base_order_size,
+        safety_order_size,
+        safety_order_scaling,
+        max_safety_orders
+      ) > total_cash
+    )
+      return 0;
+    const original_max_safety_orders = max_safety_orders;
+    while (true) {
+      if (
+        this.amount_per_bot(
+          base_order_size,
+          safety_order_size,
+          safety_order_scaling,
+          max_safety_orders
+        ) *
+          num_bots >
+        total_cash
+      ) {
+        const possible_new_sos =
+          max_safety_orders - original_max_safety_orders - 1;
+        return possible_new_sos >= 0 ? possible_new_sos : 0;
+      }
+      max_safety_orders++;
+    }
+  },
 };
