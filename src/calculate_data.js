@@ -39,6 +39,7 @@ export const calculate_data = {
   },
 
   extra_bots(total_cash = 0.0, amount_per_bot = 0.0, total_bots = 0) {
+    // TODO: THIS DOES NOT FACTOR IN SCALING OF EXTRA SOs
     if (total_cash <= 0.0 || amount_per_bot <= 0.0) {
       return 0;
     }
@@ -49,5 +50,38 @@ export const calculate_data = {
     return total_bots_calculated < 1
       ? 0
       : this.normalize_numbers_int(total_bots_calculated);
+  },
+
+  percentage_of_sos_covered(
+    total_cash,
+    total_bots,
+    base_order_size,
+    safety_order_size,
+    num_safety_orders,
+    safety_order_scaling
+  ) {
+    for (let arg of arguments) {
+      if (arg === undefined || arg === null || arg === 0) {
+        return 0;
+      }
+    }
+
+    const so_amount =
+      (this.amount_per_bot(
+        base_order_size,
+        safety_order_size,
+        safety_order_scaling,
+        num_safety_orders
+      ) -
+        safety_order_size) *
+      total_bots;
+    const total_cash_without_base_orders =
+      total_cash - base_order_size * total_bots;
+    const percentage_of_sos_covered =
+      (total_cash_without_base_orders / so_amount) * 100;
+
+    return percentage_of_sos_covered < 100
+      ? this.normalize_numbers(percentage_of_sos_covered)
+      : this.normalize_numbers(100);
   },
 };

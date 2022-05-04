@@ -216,8 +216,39 @@ export class LayoutManager {
       amount_per_bot,
       total_bots
     );
+    const base_ordersize = this.get_base_ordersize();
+    const safety_ordersize = this.get_safety_ordersize();
+    const num_safety_orders = this.get_max_safety_orders();
+    const safety_order_scaling = this.get_safety_ordersize_scaling();
+    const percentage_of_sos_covered =
+      calculate_data.percentage_of_sos_covered(
+        extra_cash,
+        total_bots,
+        base_ordersize,
+        safety_ordersize,
+        num_safety_orders,
+        safety_order_scaling
+      ) + "%";
 
     document.getElementById("possibleextrabotoutput").innerHTML = possible_bots;
+    document.getElementById("numberofcoveredsafetyordersoutput").innerHTML =
+      percentage_of_sos_covered;
+
+    if (percentage_of_sos_covered === "100.00%") {
+      document
+        .getElementById("numberofcoveredsafetyordersoutput")
+        .classList.remove("red");
+      document
+        .getElementById("numberofcoveredsafetyordersoutput")
+        .classList.add("green");
+    } else {
+      document
+        .getElementById("numberofcoveredsafetyordersoutput")
+        .classList.remove("green");
+      document
+        .getElementById("numberofcoveredsafetyordersoutput")
+        .classList.add("red");
+    }
 
     if (possible_bots <= 0) {
       document
