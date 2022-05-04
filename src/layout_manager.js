@@ -234,31 +234,12 @@ export class LayoutManager {
     document.getElementById("numberofcoveredsafetyordersoutput").innerHTML =
       percentage_of_sos_covered;
 
-    if (percentage_of_sos_covered === "100.00%") {
-      document
-        .getElementById("numberofcoveredsafetyordersoutput")
-        .classList.remove("red");
-      document
-        .getElementById("numberofcoveredsafetyordersoutput")
-        .classList.add("green");
-    } else {
-      document
-        .getElementById("numberofcoveredsafetyordersoutput")
-        .classList.remove("green");
-      document
-        .getElementById("numberofcoveredsafetyordersoutput")
-        .classList.add("red");
-    }
+    if (percentage_of_sos_covered === "100.00%")
+      this.set_element_green("numberofcoveredsafetyordersoutput");
+    else this.set_element_red("numberofcoveredsafetyordersoutput");
 
-    if (possible_bots <= 0) {
-      document
-        .getElementById("possibleextrabotoutput")
-        .classList.remove("green");
-      document.getElementById("possibleextrabotoutput").classList.add("red");
-    } else {
-      document.getElementById("possibleextrabotoutput").classList.remove("red");
-      document.getElementById("possibleextrabotoutput").classList.add("green");
-    }
+    if (possible_bots <= 0) this.set_element_red("possibleextrabotoutput");
+    else this.set_element_green("possibleextrabotoutput");
   }
 
   set_total_cash() {
@@ -320,15 +301,18 @@ export class LayoutManager {
       this.get_total_cash() - this.get_amount_per_bot() * this.get_total_bots()
     );
 
-    let extra_element = document.getElementById("extracashoutput");
-    extra_element.innerHTML = "$" + extra;
+    document.getElementById("extracashoutput").innerHTML = "$" + extra;
+    if (extra <= 0) this.set_element_red("extracashoutput");
+    else this.set_element_green("extracashoutput");
+  }
 
-    if (extra <= 0) {
-      extra_element.classList.add("red");
-      extra_element.classList.remove("green");
-    } else {
-      extra_element.classList.remove("red");
-      extra_element.classList.add("green");
-    }
+  set_element_green(element) {
+    document.getElementById(element).classList.remove("red");
+    document.getElementById(element).classList.add("green");
+  }
+
+  set_element_red(element) {
+    document.getElementById(element).classList.remove("green");
+    document.getElementById(element).classList.add("red");
   }
 }
