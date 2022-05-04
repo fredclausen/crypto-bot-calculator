@@ -35,3 +35,4 @@ The following inputs are available
 
 * The calculator doesn't factor in trading fees, so if you use the same numbers on a site like 3Commas you may see the site indicate the bot will use slightly more cash than CBC.
 * All bots are assumed to be set up the same. Future improvement will be to allow bots to be individually set up
+* Localization is *NOT* supported. Decimals are required for values (ie `1000.01` instead of `1000,01`)
