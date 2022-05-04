@@ -39,7 +39,6 @@ export const calculate_data = {
   },
 
   extra_bots(total_cash = 0.0, amount_per_bot = 0.0, total_bots = 0) {
-    // TODO: THIS DOES NOT FACTOR IN SCALING OF EXTRA SOs
     if (total_cash <= 0.0 || amount_per_bot <= 0.0) {
       return 0;
     }
