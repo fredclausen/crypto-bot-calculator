@@ -2,10 +2,18 @@ import { calculate_data } from "./calculate_data.js";
 
 export class LayoutManager {
   // the constructor
+  separator = this.getDecimalSeparator();
+
   constructor() {
     this.load_all_values();
     this.init_inputs();
     this.init_or_update_outputs();
+  }
+
+  getDecimalSeparator(locale) {
+    const numberWithDecimalSeparator = 1.1;
+
+    return numberWithDecimalSeparator.toLocaleString(locale).substring(1, 2);
   }
 
   init_inputs() {
@@ -66,7 +74,9 @@ export class LayoutManager {
             // We have to check for the decimal separator as well as if the character is a number
             // Otherwise we always drop the decimal which is annoying
             // TODO: Localize this. Lots of non-American countries use a comma as a decimal separator
-            if (!calculate_data.is_number(c) || !c === ".") {
+            // This is partially localized. Is there other possibilities?
+            console.log(c);
+            if (!calculate_data.is_number(c) && !c === this.separator) {
               element.target.value = element.target.value.replace(c, "");
               // SUPER important to move the cursor position back one so
               // The user input is at the same spot it was before

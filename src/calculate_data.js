@@ -4,15 +4,19 @@ export const calculate_data = {
   },
 
   normalize_numbers: function (input_number = 0.0) {
-    return input_number !== undefined ? input_number.toFixed(2) : "0.00";
+    return input_number !== undefined
+      ? input_number.toFixed(2)
+      : "0.00".toLocaleString();
   },
 
   normalize_numbers_int: function (input_number = 0) {
-    return input_number ? input_number.toFixed(0) : "0";
+    return input_number
+      ? input_number.toFixed(0).toLocaleString()
+      : "0".toLocaleString();
   },
 
   total_cash: function (free_cash = 0.0, cash_in_bots = 0.0) {
-    return this.normalize_numbers(free_cash + cash_in_bots);
+    return this.normalize_numbers(free_cash + cash_in_bots).toLocaleString();
   },
 
   amount_per_bot: function (
