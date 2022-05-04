@@ -1,4 +1,8 @@
 export const calculate_data = {
+  is_number(number_to_check) {
+    return !isNaN(parseFloat(number_to_check)) && isFinite(number_to_check);
+  },
+
   normalize_numbers: function (input_number = 0.0) {
     return input_number !== undefined ? input_number.toFixed(2) : "0.00";
   },
@@ -28,6 +32,7 @@ export const calculate_data = {
     var previous_safety_order = safety_order_size;
     for (let i = 1; i <= max_safety_orders; i++) {
       safety_order_usage += previous_safety_order;
+      //console.log("SO #" + i + " " + safety_order_usage);
       previous_safety_order *= safety_order_scaling;
     }
     return this.normalize_numbers(base_order_size + safety_order_usage);
