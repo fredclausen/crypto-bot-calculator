@@ -25,9 +25,9 @@ const store = new Store({
       bots: [
         {
           num_bots: 1,
-          base_ordersize: 10.0,
-          safety_ordersize: 20.0,
-          safety_ordersize_scaling: 1.0,
+          base_order_size: 10.0,
+          safety_order_size: 20.0,
+          safety_order_scaling: 1.0,
           max_safety_orders: 5,
         },
       ],

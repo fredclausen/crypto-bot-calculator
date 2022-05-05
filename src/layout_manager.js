@@ -2,6 +2,7 @@ import { BotManager } from "./bot_manager.js";
 import { Cash } from "./cash.js";
 import { calculate_data } from "./calculate_data.js";
 import { element_ids } from "./data_structs.js";
+import { get_settings, save_settings } from "./front_end_settings.js";
 
 // TODO: Lots of variable name mismatches make it hard to track
 // Stuff. Go through and make everything consistent
@@ -175,7 +176,7 @@ export class LayoutManager {
   }
 
   async load_all_values() {
-    const settings = await window.electronAPI.getsettings();
+    const settings = await get_settings();
 
     this.bot_manager.load_settings(settings);
     this.cash.set_free_cash(settings.cash.free_cash);
@@ -265,7 +266,7 @@ export class LayoutManager {
   save_all_values() {
     let settings = this.bot_manager.get_settings();
     settings.cash = this.cash.get_settings();
-    window.electronAPI.savesettings(settings);
+    save_settings(settings);
   }
 
   set_possible_extra_bots() {
@@ -324,7 +325,10 @@ export class LayoutManager {
       Number(this.cash.get_total_cash()) -
       this.bot_manager.get_bot_usage() *
         Number(this.bot_manager.get_num_bots());
-    this.set_element_html(element_ids.extra_cash, "$" + extra);
+    this.set_element_html(
+      element_ids.extra_cash,
+      "$" + calculate_data.normalize_numbers(extra)
+    );
 
     if (extra <= 0) this.set_element_red(element_ids.extra_cash);
     else this.set_element_green(element_ids.extra_cash);

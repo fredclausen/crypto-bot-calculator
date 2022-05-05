@@ -3,7 +3,7 @@ import { calculate_data } from "./calculate_data.js";
 export class DCABot {
   num_bots = 0;
   base_order_size = 0.0;
-  safety_ordersize = 0.0;
+  safety_order_size = 0.0;
   safety_order_scaling = 0.0;
   max_safety_orders = 0.0;
 
@@ -11,14 +11,14 @@ export class DCABot {
     settings = {
       num_bots: 0,
       base_order_size: 0.0,
-      safety_ordersize: 0.0,
+      safety_order_size: 0.0,
       safety_order_scaling: 0.0,
       max_safety_orders: 0.0,
     }
   ) {
     this.num_bots = settings.num_bots || 0;
     this.base_order_size = settings.base_order_size || 0.0;
-    this.safety_ordersize = settings.safety_ordersize || 0.0;
+    this.safety_order_size = settings.safety_order_size || 0.0;
     this.safety_order_scaling = settings.safety_order_scaling || 0.0;
     this.max_safety_orders = settings.max_safety_orders || 0;
   }
@@ -30,7 +30,7 @@ export class DCABot {
     return calculate_data.normalize_numbers(this.base_order_size);
   }
   getSafetyOrderSize() {
-    return calculate_data.normalize_numbers(this.safety_ordersize);
+    return calculate_data.normalize_numbers(this.safety_order_size);
   }
   getSafetyOrderScaling() {
     return calculate_data.normalize_numbers(this.safety_order_scaling);
@@ -44,8 +44,8 @@ export class DCABot {
   setBaseOrderSize(base_order_size) {
     this.base_order_size = Number(base_order_size);
   }
-  setSafetyOrderSize(safety_ordersize) {
-    this.safety_ordersize = Number(safety_ordersize);
+  setSafetyOrderSize(safety_order_size) {
+    this.safety_order_size = Number(safety_order_size);
   }
   setSafetyOrderScaling(safety_order_scaling) {
     this.safety_order_scaling = Number(safety_order_scaling);
@@ -57,7 +57,7 @@ export class DCABot {
   get_bot_usage() {
     return calculate_data.amount_per_bot(
       this.base_order_size,
-      this.safety_ordersize,
+      this.safety_order_size,
       this.safety_order_scaling,
       this.max_safety_orders
     );
@@ -67,7 +67,7 @@ export class DCABot {
     return {
       num_bots: this.num_bots,
       base_order_size: this.base_order_size,
-      safety_ordersize: this.safety_ordersize,
+      safety_order_size: this.safety_order_size,
       safety_order_scaling: this.safety_order_scaling,
       max_safety_orders: this.max_safety_orders,
     };
