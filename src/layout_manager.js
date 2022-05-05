@@ -1,10 +1,15 @@
+import { BotManager } from "./bot_manager.js";
+import { Cash } from "./cash.js";
 import { calculate_data } from "./calculate_data.js";
+import { element_ids } from "./data_structs.js";
 
 // TODO: Lots of variable name mismatches make it hard to track
 // Stuff. Go through and make everything consistent
 export class LayoutManager {
   // the constructor
   separator = this.getDecimalSeparator();
+  bot_manager = new BotManager();
+  cash = new Cash();
 
   constructor() {
     this.load_all_values();
@@ -12,6 +17,7 @@ export class LayoutManager {
     this.init_or_update_outputs();
   }
 
+  // Used to get the current locale's decimal separator. Used for localization
   getDecimalSeparator(locale) {
     const numberWithDecimalSeparator = 1.1;
 
@@ -26,8 +32,8 @@ export class LayoutManager {
     // And also normalize the displayed number to be correct
     input_elements.forEach((element) => {
       element.value =
-        element.id !== "maxsafetyordersinput" &&
-        element.id !== "numberofbotsinput"
+        element.id !== element_ids.max_safety_orders &&
+        element.id !== element_ids.number_of_bots
           ? calculate_data.normalize_numbers(Number(element.value))
           : calculate_data.normalize_numbers_int(Number(element.value));
 
@@ -41,8 +47,8 @@ export class LayoutManager {
       // Since the validator as they're typing ignores some stuff
       element.addEventListener("focusout", (element) => {
         if (
-          element.target.id !== "maxsafetyordersinput" &&
-          element.target.id !== "numberofbotsinput"
+          element.target.id !== element_ids.max_safety_orders &&
+          element.target.id !== element_ids.number_of_bots
         ) {
           element.target.value = calculate_data.normalize_numbers(
             Number(element.target.value)
@@ -53,6 +59,20 @@ export class LayoutManager {
           );
         }
 
+        if (
+          element.target.id === element_ids.total_free_cash ||
+          element.target.id === element_ids.total_cash_in_bots
+        ) {
+          this.cash.update_unknown_value(
+            element.target.id,
+            element.target.value
+          );
+        } else {
+          this.bot_manager.update_unknown_value(
+            element.target.id,
+            element.target.value
+          );
+        }
         this.init_or_update_outputs();
       });
 
@@ -77,7 +97,7 @@ export class LayoutManager {
             // Otherwise we always drop the decimal which is annoying
             // TODO: Localize this. Lots of non-American countries use a comma as a decimal separator
             // This is partially localized. Is there other possibilities?
-            console.log(c);
+
             if (!calculate_data.is_number(c) && !c === this.separator) {
               element.target.value = element.target.value.replace(c, "");
               // SUPER important to move the cursor position back one so
@@ -95,8 +115,8 @@ export class LayoutManager {
         // everything but Number of total safety orders and number of bots should be to two decimal places
 
         if (
-          element.target.id !== "maxsafetyordersinput" &&
-          element.target.id !== "numberofbotsinput"
+          element.target.id !== element_ids.max_safety_orders &&
+          element.target.id !== element_ids.number_of_bots
         ) {
           // If the number DOES NOT include more than 2 decimal places don't change
           // The Value. If it does, change it to the correct number of decimal places
@@ -157,192 +177,157 @@ export class LayoutManager {
   async load_all_values() {
     const settings = await window.electronAPI.getsettings();
 
-    this.set_total_free_cash(
-      calculate_data.normalize_numbers(settings.free_cash)
-    );
-    this.set_total_cash_in_bots(
-      calculate_data.normalize_numbers(settings.cash_in_bots)
-    );
-    this.set_number_of_bots(
-      calculate_data.normalize_numbers_int(settings.num_bots)
-    );
-    this.set_base_order_size(
-      calculate_data.normalize_numbers(settings.base_ordersize)
-    );
-    this.set_safety_ordersize(
-      calculate_data.normalize_numbers(settings.safety_ordersize)
-    );
+    this.bot_manager.load_settings(settings);
+    this.cash.set_free_cash(settings.cash.free_cash);
+    this.cash.set_cash_in_bots(settings.cash.cash_in_bots);
+
+    this.set_total_free_cash(this.cash.get_free_cash());
+    this.set_total_cash_in_bots(this.cash.get_cash_in_bots());
+    this.set_number_of_bots(this.bot_manager.get_num_bots());
+    this.set_base_order_size(this.bot_manager.get_base_order_size());
+    this.set_safety_ordersize(this.bot_manager.get_safety_order_size());
     this.set_safety_order_size_scaling(
-      calculate_data.normalize_numbers(settings.safety_ordersize_scaling)
+      this.bot_manager.get_safety_order_scaling()
     );
-    document.getElementById("maxsafetyordersinput").value =
-      calculate_data.normalize_numbers_int(settings.max_safety_orders);
+    this.set_max_safety_orders(this.bot_manager.get_max_safety_orders());
 
     this.init_or_update_outputs();
   }
 
+  set_element_value(element, value) {
+    if (element === null || value === null) {
+      console.error("No value to set");
+      return;
+    }
+
+    try {
+      document.getElementById(element).value = value;
+    } catch (e) {
+      console.error("Element not found");
+      console.error(e);
+    }
+  }
+
+  set_element_html(element, html) {
+    if (element === null || html === null) {
+      console.error("No HTML to set");
+      return;
+    }
+
+    try {
+      document.getElementById(element).innerHTML = html;
+    } catch (e) {
+      console.error("Element not found");
+      console.error(e);
+    }
+  }
+
+  get_element_value(element) {
+    if (!element) {
+      console.error("No element to get value from");
+      return;
+    }
+
+    return document.getElementById(element).value;
+  }
+
   set_total_free_cash(total_cash) {
-    document.getElementById("totalfreecashinput").value = total_cash;
+    this.set_element_value(element_ids.total_free_cash, total_cash);
   }
 
   set_total_cash_in_bots(cash_in_bots) {
-    document.getElementById("totalcashinbotsinput").value = cash_in_bots;
+    this.set_element_value(element_ids.total_cash_in_bots, cash_in_bots);
   }
 
   set_number_of_bots(number_of_bots) {
-    document.getElementById("numberofbotsinput").value = number_of_bots;
+    this.set_element_value(element_ids.number_of_bots, number_of_bots);
   }
 
   set_base_order_size(base_order_size) {
-    document.getElementById("baseordersizeinput").value = base_order_size;
+    this.set_element_value(element_ids.base_order_size, base_order_size);
   }
 
   set_safety_ordersize(safety_ordersize) {
-    document.getElementById("safetyordersizeinput").value = safety_ordersize;
+    this.set_element_value(element_ids.safety_ordersize, safety_ordersize);
   }
 
   set_safety_order_size_scaling(safety_order_size_scaling) {
-    document.getElementById("safetyordersizescalinginput").value =
-      safety_order_size_scaling;
+    this.set_element_value(
+      element_ids.safety_order_size_scaling,
+      safety_order_size_scaling
+    );
   }
 
-  set_max_safety_ordersize(max_safety_ordersize) {
-    document.getElementById("maxsafetyordersinput").value =
-      max_safety_ordersize;
+  set_max_safety_orders(max_safety_ordersize) {
+    this.set_element_value(element_ids.max_safety_orders, max_safety_ordersize);
   }
 
   save_all_values() {
-    const settings = {
-      free_cash: Number(this.get_free_cash()),
-      cash_in_bots: this.get_cash_in_bots(),
-      base_ordersize: this.get_base_ordersize(),
-      safety_ordersize: this.get_safety_ordersize(),
-      safety_ordersize_scaling: this.get_safety_ordersize_scaling(),
-      max_safety_orders: this.get_max_safety_orders(),
-      num_bots: this.get_total_bots(),
-    };
+    let settings = this.bot_manager.get_settings();
+    settings.cash = this.cash.get_settings();
     window.electronAPI.savesettings(settings);
   }
 
   set_possible_extra_bots() {
-    const extra_cash = this.get_total_cash();
-    const amount_per_bot = this.get_amount_per_bot();
-    const total_bots = this.get_total_bots();
-    const possible_bots = calculate_data.extra_bots(
-      extra_cash,
-      amount_per_bot,
-      total_bots
+    const extra_bots_and_percent_covered =
+      this.bot_manager.get_possible_extra_bots(
+        Number(this.cash.get_total_cash())
+      );
+
+    this.set_element_html(
+      element_ids.possible_extra_bots,
+      extra_bots_and_percent_covered.possible_extra_bots
     );
-    const base_ordersize = this.get_base_ordersize();
-    const safety_ordersize = this.get_safety_ordersize();
-    const num_safety_orders = this.get_max_safety_orders();
-    const safety_order_scaling = this.get_safety_ordersize_scaling();
-    const percentage_of_sos_covered =
-      calculate_data.percentage_of_sos_covered(
-        extra_cash,
-        total_bots,
-        base_ordersize,
-        safety_ordersize,
-        num_safety_orders,
-        safety_order_scaling
-      ) + "%";
+    this.set_element_html(
+      element_ids.number_of_covered_safety_orders,
+      extra_bots_and_percent_covered.percentage_of_sos_covered
+    );
 
-    document.getElementById("possibleextrabotoutput").innerHTML = possible_bots;
-    document.getElementById("numberofcoveredsafetyordersoutput").innerHTML =
-      percentage_of_sos_covered;
-
-    if (percentage_of_sos_covered === "100.00%")
-      this.set_element_green("numberofcoveredsafetyordersoutput");
-    else this.set_element_red("numberofcoveredsafetyordersoutput");
-
-    if (possible_bots <= 0) this.set_element_red("possibleextrabotoutput");
-    else this.set_element_green("possibleextrabotoutput");
+    if (extra_bots_and_percent_covered.percentage_of_sos_covered === "100.00%")
+      this.set_element_green(element_ids.number_of_covered_safety_orders);
+    else this.set_element_red(element_ids.number_of_covered_safety_orders);
+    if (extra_bots_and_percent_covered.possible_extra_bots <= 0)
+      this.set_element_red(element_ids.possible_extra_bots);
+    else this.set_element_green(element_ids.possible_extra_bots);
   }
 
   set_total_cash() {
-    document.getElementById("totalcashoutput").innerHTML =
-      "$" + this.get_total_cash();
+    this.set_element_html(
+      element_ids.total_cash,
+      "$" + this.cash.get_total_cash()
+    );
   }
 
   set_amount_per_bot() {
-    document.getElementById("cashusedperbotoutput").innerHTML =
-      "$" + this.get_amount_per_bot();
+    this.set_element_html(
+      element_ids.cashusedperbot,
+      this.bot_manager.get_bot_usage()
+    );
   }
 
   set_extra_possible_sos() {
-    const extra_cash = this.get_total_cash();
-    const base_ordersize = this.get_base_ordersize();
-    const safety_ordersize = this.get_safety_ordersize();
-    const max_safety_orders = this.get_max_safety_orders();
-    const safety_order_scaling = this.get_safety_ordersize_scaling();
-    const num_bots = this.get_total_bots();
-    const possible_sos = calculate_data.get_possible_extra_sos(
-      extra_cash,
-      base_ordersize,
-      safety_ordersize,
-      safety_order_scaling,
-      max_safety_orders,
-      num_bots
+    const possible_sos = this.bot_manager.get_possible_extra_safety_orders(
+      Number(this.cash.get_total_cash())
+    );
+    this.set_element_html(
+      element_ids.possible_extra_safety_orders,
+      possible_sos
     );
 
-    document.getElementById("possibleextrasossoutput").innerHTML = possible_sos;
-
-    if (possible_sos <= 0) this.set_element_red("possibleextrasossoutput");
-    else this.set_element_green("possibleextrasossoutput");
-  }
-
-  get_total_cash() {
-    return calculate_data.total_cash(
-      this.get_free_cash(),
-      this.get_cash_in_bots()
-    );
-  }
-
-  get_total_bots() {
-    return Number(document.getElementById("numberofbotsinput").value);
-  }
-
-  get_amount_per_bot() {
-    return calculate_data.amount_per_bot(
-      this.get_base_ordersize(),
-      this.get_safety_ordersize(),
-      this.get_safety_ordersize_scaling(),
-      this.get_max_safety_orders()
-    );
-  }
-
-  get_free_cash() {
-    return Number(document.getElementById("totalfreecashinput").value);
-  }
-
-  get_cash_in_bots() {
-    return Number(document.getElementById("totalcashinbotsinput").value);
-  }
-
-  get_base_ordersize() {
-    return Number(document.getElementById("baseordersizeinput").value);
-  }
-
-  get_safety_ordersize() {
-    return Number(document.getElementById("safetyordersizeinput").value);
-  }
-
-  get_safety_ordersize_scaling() {
-    return Number(document.getElementById("safetyordersizescalinginput").value);
-  }
-
-  get_max_safety_orders() {
-    return Number(document.getElementById("maxsafetyordersinput").value);
+    if (possible_sos <= 0)
+      this.set_element_red(element_ids.possible_extra_safety_orders);
+    else this.set_element_green(element_ids.possible_extra_safety_orders);
   }
 
   set_extra_cash() {
-    const extra = calculate_data.normalize_numbers(
-      this.get_total_cash() - this.get_amount_per_bot() * this.get_total_bots()
-    );
+    const extra =
+      Number(this.cash.get_total_cash()) -
+      this.bot_manager.get_bot_usage() *
+        Number(this.bot_manager.get_num_bots());
+    this.set_element_html(element_ids.extra_cash, "$" + extra);
 
-    document.getElementById("extracashoutput").innerHTML = "$" + extra;
-    if (extra <= 0) this.set_element_red("extracashoutput");
-    else this.set_element_green("extracashoutput");
+    if (extra <= 0) this.set_element_red(element_ids.extra_cash);
+    else this.set_element_green(element_ids.extra_cash);
   }
 
   set_element_green(element) {

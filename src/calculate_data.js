@@ -25,9 +25,10 @@ export const calculate_data = {
     safety_order_scaling,
     max_safety_orders
   ) {
-    // ensure all parameters are valid. Any undefined or 0 means the calculation cannot happen
+    if (base_order_size === null || base_order_size <= 0) return 0;
+    // ensure all parameters are valid. Any undefined or less than 0 means the calculation cannot happen
     for (let arg of arguments) {
-      if (arg === undefined || arg === null || arg === 0) {
+      if (arg === undefined || arg === null || arg < 0) {
         return 0;
       }
     }
@@ -36,7 +37,6 @@ export const calculate_data = {
     var previous_safety_order = safety_order_size;
     for (let i = 1; i <= max_safety_orders; i++) {
       safety_order_usage += previous_safety_order;
-      //console.log("SO #" + i + " " + safety_order_usage);
       previous_safety_order *= safety_order_scaling;
     }
     return this.normalize_numbers(base_order_size + safety_order_usage);

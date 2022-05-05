@@ -17,13 +17,20 @@ const store = new Store({
       height: 345,
     },
     user_input: {
-      free_cash: 0,
-      cash_in_bots: 0,
-      num_bots: 1,
-      base_ordersize: 0,
-      safety_ordersize: 0,
-      safety_ordersize_scaling: 1,
-      max_safety_orders: 5,
+      selected_bot: 0,
+      cash: {
+        free_cash: 0.0,
+        cash_in_bots: 0.0,
+      },
+      bots: [
+        {
+          num_bots: 1,
+          base_ordersize: 10.0,
+          safety_ordersize: 20.0,
+          safety_ordersize_scaling: 1.0,
+          max_safety_orders: 5,
+        },
+      ],
     },
   },
 });
