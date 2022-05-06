@@ -4,3 +4,4 @@
 * Webpack to make everything smaller
 * Show a graph, or list maybe, of all SOs for the bot
 * Allow multiple bot setup parameters (SO size etc)
+* Add in a manual DCA calculator (ie, to simulate the "Add Funds button)
