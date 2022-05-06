@@ -4,8 +4,6 @@ import { calculate_data } from "./calculate_data.js";
 import { element_ids } from "./data_structs.js";
 import { get_settings, save_settings } from "./front_end_settings.js";
 
-// TODO: Lots of variable name mismatches make it hard to track
-// Stuff. Go through and make everything consistent
 export class LayoutManager {
   // the constructor
   separator = this.getDecimalSeparator();
@@ -160,10 +158,6 @@ export class LayoutManager {
   }
 
   init_or_update_outputs() {
-    // TODO: Get all of the input values and pass them in to these functions
-    // That was we only walk the DOM tree once to get the values, and then don't have to
-    // Do it every single time we want to update the outputs
-
     this.set_total_cash();
     this.set_amount_per_bot();
     this.set_extra_cash();
@@ -176,6 +170,8 @@ export class LayoutManager {
   }
 
   async load_all_values() {
+    // We need to AWAIT this because it's an async call because it
+    // Returns a promise.
     const settings = await get_settings();
 
     this.bot_manager.load_settings(settings);
@@ -269,6 +265,7 @@ export class LayoutManager {
     save_settings(settings);
   }
 
+  // TODO: split this in to two functions. I don't know why I wrote it as one
   set_possible_extra_bots() {
     const extra_bots_and_percent_covered =
       this.bot_manager.get_possible_extra_bots(
