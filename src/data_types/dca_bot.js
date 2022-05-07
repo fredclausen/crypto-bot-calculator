@@ -1,4 +1,4 @@
-import { calculate_data } from "./calculate_data.js";
+import { calculate_data } from "../calculate_data.js";
 
 export class DCABot {
   num_bots = 0;

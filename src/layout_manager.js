@@ -1,7 +1,7 @@
-import { BotManager } from "./bot_manager.js";
-import { Cash } from "./cash.js";
+import { BotManager } from "./data_types/bot_manager.js";
+import { Cash } from "./data_types/cash.js";
 import { calculate_data } from "./calculate_data.js";
-import { element_ids } from "./data_structs.js";
+import { element_ids } from "./templates/data_structs.js";
 import { get_settings, save_settings } from "./front_end_settings.js";
 import $ from "./jquery_init.js";
 export class LayoutManager {

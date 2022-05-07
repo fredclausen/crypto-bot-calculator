@@ -1,6 +1,6 @@
 import { DCABot } from "./dca_bot.js";
-import { element_ids } from "./data_structs.js";
-import { calculate_data } from "./calculate_data.js";
+import { element_ids } from "../templates/data_structs.js";
+import { calculate_data } from "../calculate_data.js";
 
 export class BotManager {
   bots = [];
