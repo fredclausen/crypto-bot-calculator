@@ -331,12 +331,12 @@ export class LayoutManager {
   }
 
   set_element_green(element) {
-    $(`.${element}`).removeClass("red");
-    $(`.${element}`).addClass("green");
+    $(`#${element}`).removeClass("red");
+    $(`#${element}`).addClass("green");
   }
 
   set_element_red(element) {
-    $(`.${element}`).removeClass("green");
-    $(`.${element}`).addClass("red");
+    $(`#${element}`).removeClass("green");
+    $(`#${element}`).addClass("red");
   }
 }
