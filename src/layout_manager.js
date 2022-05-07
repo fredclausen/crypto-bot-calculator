@@ -23,6 +23,111 @@ export class LayoutManager {
     return numberWithDecimalSeparator.toLocaleString(locale).substring(1, 2);
   }
 
+  on_input_element_dblclck(ID) {
+    console.log(ID);
+    $(ID).select();
+    $(ID).focus();
+  }
+
+  on_input_element_key_up(ID, ID_NO_SELECTION) {
+    // Get cursor positon
+    // We need both the start/end so that the input box doesn't magically
+    // Select shit we didn't want to select
+
+    let cursor_start_position = $(ID).prop("selectionStart");
+    let cursor_end_position = $(ID).prop("selectionEnd");
+    let element_value = $(ID).val();
+    // validate input is an actual number
+    // We'll loop through the string input to see what the user has entered
+    // This is a less elegant approach than simple find/replace all non-numbers
+    // But since the possibilities of non-alpha characters are endless
+    // And I can't be bothered to write a regex to replace them
+    // I'll just do this
+
+    if (!calculate_data.is_number(element_value)) {
+      for (let c of element_value) {
+        // We have to check for the decimal separator as well as if the character is a number
+        // Otherwise we always drop the decimal which is annoying
+        // TODO: Localize this. Lots of non-American countries use a comma as a decimal separator
+        // This is partially localized. Is there other possibilities?
+
+        if (!calculate_data.is_number(c) && !c === this.separator) {
+          $(ID).val(element_value.replace(c, ""));
+          // SUPER important to move the cursor position back one so
+          // The user input is at the same spot it was before
+          cursor_start_position--;
+          cursor_end_position--;
+          // Since we are doing this every single key stroke there is no possibility of
+          // More than one bad character being in the string
+          // So we can break out of the loop
+          break;
+        }
+      }
+    }
+    // Change the input to always be the correct number of decimals
+    // everything but Number of total safety orders and number of bots should be to two decimal places
+    element_value = $(ID).val();
+    if (
+      ID_NO_SELECTION !== element_ids.max_safety_orders &&
+      ID_NO_SELECTION !== element_ids.min_safety_ordersnumber_of_bots
+    ) {
+      // If the number DOES NOT include more than 2 decimal places don't change
+      // The Value. If it does, change it to the correct number of decimal places
+      // We are SLICING the string, and assuming the last char the user typed
+      // Is not relevant. Other method, and maybe worth doing, would be to not
+      // Slice, pass the entire value the user typed to the normalalize function
+      // And let it round.
+
+      if (
+        element_value.includes(".") &&
+        element_value.split(".")[1].length > 2
+      ) {
+        $(ID).val(
+          calculate_data.normalize_numbers(
+            Number(element_value.slice(0, element_value.length - 1))
+          )
+        );
+      }
+    } else {
+      $(ID).val(calculate_data.normalize_numbers_int(Number(element_value)));
+    }
+
+    // set cursor position back to where it was
+    // Start and End selection points are set so that it doesn't
+    // highlight text that wasn't highlighted before
+
+    $(ID).prop("selectionStart", cursor_start_position);
+    $(ID).prop("selectionEnd", cursor_end_position);
+
+    // This is a bit of a weak stick approach
+    // Every key stroke on an input element is going to cause all values to be recalculated
+    // Even if the value isn't impacted by what is being updated
+    // Maybe should consider figuring out what element is being updated and only recalc
+    // relevant fields, but that feels difficult to track
+    this.init_or_update_outputs();
+  }
+
+  on_input_element_focus_out(ID, ID_NO_SELECTION) {
+    if (
+      ID_NO_SELECTION !== element_ids.max_safety_orders &&
+      ID_NO_SELECTION !== element_ids.number_of_bots
+    ) {
+      $(ID).val(calculate_data.normalize_numbers(Number($(ID).val())));
+    } else {
+      $(ID).val(calculate_data.normalize_numbers_int(Number($(ID).val())));
+    }
+
+    if (
+      ID_NO_SELECTION === element_ids.total_free_cash ||
+      ID_NO_SELECTION === element_ids.total_cash_in_bots
+    ) {
+      this.cash.update_unknown_value(ID_NO_SELECTION, $(ID).val());
+    } else {
+      this.bot_manager.update_unknown_value(ID_NO_SELECTION, $(ID).val());
+    }
+    this.init_or_update_outputs();
+  }
+
   init_inputs() {
     // get the input elements
     $("input[type='text']").each((_, element) => {
@@ -40,113 +145,17 @@ export class LayoutManager {
       );
 
       // // Event listener to listen for a double click and select all text
-      $(ID).on("dblclick", () => {
-        $(ID).select();
-        $(ID).focus();
-      });
+      $(ID).on("dblclick", () => this.on_input_element_dblclck(ID));
 
       // // When the user de-focuses the input validate it fully
       // // Since the validator as they're typing ignores some stuff
-      $(ID).on("focusout", () => {
-        if (
-          ID_NO_SELECTION !== element_ids.max_safety_orders &&
-          ID_NO_SELECTION !== element_ids.number_of_bots
-        ) {
-          $(ID).val(calculate_data.normalize_numbers(Number($(ID).val())));
-        } else {
-          $(ID).val(calculate_data.normalize_numbers_int(Number($(ID).val())));
-        }
+      $(ID).on("focusout", () =>
+        this.on_input_element_focus_out(ID, ID_NO_SELECTION)
+      );
 
-        if (
-          ID_NO_SELECTION === element_ids.total_free_cash ||
-          ID_NO_SELECTION === element_ids.total_cash_in_bots
-        ) {
-          this.cash.update_unknown_value(ID_NO_SELECTION, $(ID).val());
-        } else {
-          this.bot_manager.update_unknown_value(ID_NO_SELECTION, $(ID).val());
-        }
-        this.init_or_update_outputs();
-      });
-
-      $(ID).on("keyup", () => {
-        // Get cursor positon
-        // We need both the start/end so that the input box doesn't magically
-        // Select shit we didn't want to select
-
-        let cursor_start_position = $(ID).prop("selectionStart");
-        let cursor_end_position = $(ID).prop("selectionEnd");
-        let element_value = $(ID).val();
-        // validate input is an actual number
-        // We'll loop through the string input to see what the user has entered
-        // This is a less elegant approach than simple find/replace all non-numbers
-        // But since the possibilities of non-alpha characters are endless
-        // And I can't be bothered to write a regex to replace them
-        // I'll just do this
-
-        if (!calculate_data.is_number(element_value)) {
-          for (let c of element_value) {
-            // We have to check for the decimal separator as well as if the character is a number
-            // Otherwise we always drop the decimal which is annoying
-            // TODO: Localize this. Lots of non-American countries use a comma as a decimal separator
-            // This is partially localized. Is there other possibilities?
-
-            if (!calculate_data.is_number(c) && !c === this.separator) {
-              $(ID).val(element_value.replace(c, ""));
-              // SUPER important to move the cursor position back one so
-              // The user input is at the same spot it was before
-              cursor_start_position--;
-              cursor_end_position--;
-              // Since we are doing this every single key stroke there is no possibility of
-              // More than one bad character being in the string
-              // So we can break out of the loop
-              break;
-            }
-          }
-        }
-        // Change the input to always be the correct number of decimals
-        // everything but Number of total safety orders and number of bots should be to two decimal places
-        element_value = $(ID).val();
-        if (
-          ID_NO_SELECTION !== element_ids.max_safety_orders &&
-          ID_NO_SELECTION !== element_ids.min_safety_ordersnumber_of_bots
-        ) {
-          // If the number DOES NOT include more than 2 decimal places don't change
-          // The Value. If it does, change it to the correct number of decimal places
-          // We are SLICING the string, and assuming the last char the user typed
-          // Is not relevant. Other method, and maybe worth doing, would be to not
-          // Slice, pass the entire value the user typed to the normalalize function
-          // And let it round.
-
-          if (
-            element_value.includes(".") &&
-            element_value.split(".")[1].length > 2
-          ) {
-            $(ID).val(
-              calculate_data.normalize_numbers(
-                Number(element_value.slice(0, element_value.length - 1))
-              )
-            );
-          }
-        } else {
-          $(ID).val(
-            calculate_data.normalize_numbers_int(Number(element_value))
-          );
-        }
-
-        // set cursor position back to where it was
-        // Start and End selection points are set so that it doesn't
-        // highlight text that wasn't highlighted before
-
-        $(ID).prop("selectionStart", cursor_start_position);
-        $(ID).prop("selectionEnd", cursor_end_position);
-
-        // This is a bit of a weak stick approach
-        // Every key stroke on an input element is going to cause all values to be recalculated
-        // Even if the value isn't impacted by what is being updated
-        // Maybe should consider figuring out what element is being updated and only recalc
-        // relevant fields, but that feels difficult to track
-        this.init_or_update_outputs();
-      });
+      $(ID).on("keyup", () =>
+        this.on_input_element_key_up(ID, ID_NO_SELECTION)
+      );
     });
   }
 
