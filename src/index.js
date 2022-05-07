@@ -5,6 +5,9 @@ const path = require("path");
 const Store = require("./store.js");
 let mainWindow; //do this so that the window object doesn't get GC'd
 
+const MIN_HEIGHT = 870;
+const MIN_WIDTH = 935;
+
 // First instantiate the class
 const store = new Store({
   // We'll call our data file 'user-preferences'
@@ -13,8 +16,8 @@ const store = new Store({
     windowBounds: {
       x: 0,
       y: 0,
-      width: 930,
-      height: 345,
+      width: MIN_WIDTH,
+      height: MIN_HEIGHT,
     },
     user_input: {
       selected_bot: 0,
@@ -38,10 +41,8 @@ const store = new Store({
 function createWindow() {
   // Create the browser window.
   let { x, y, width, height } = store.get("windowBounds");
-  height = height > 370 ? height : 370;
-  width = width > 930 ? width : 930;
-  const minHeight = 370;
-  const minWidth = 930;
+  height = height > MIN_HEIGHT ? height : MIN_HEIGHT;
+  width = width > MIN_WIDTH ? width : MIN_WIDTH;
 
   // Init the window
   mainWindow = new BrowserWindow({
@@ -49,8 +50,8 @@ function createWindow() {
     y: y,
     width: width,
     height: height,
-    minWidth: minWidth,
-    minHeight: minHeight,
+    minWidth: MIN_WIDTH,
+    minHeight: MIN_HEIGHT,
     title: "Crypto Bot Calculator",
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),

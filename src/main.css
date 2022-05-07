@@ -30,29 +30,58 @@ body {
   background-color: var(--light-background);
   color: var(--light-text);
   justify-content: flex-start;
-  min-height: 2em;
-  max-height: 2em;
+  min-height: 3rem;
+  max-height: 3rem;
   padding-left: 0.3rem;
 }
 
 .outside-container {
   display: grid;
-  grid-template-columns: 20% 20% auto;
-  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 250px auto;
+  grid-template-rows: auto auto auto;
   grid-gap: 0.5rem;
   background: var(--dark-background);
-  padding: 1rem;
+  padding-left: 1rem;
+  padding-bottom: 1rem;
+  padding-top: 1rem;
   border-radius: 20px;
   border: 2px solid var(--light-border);
 }
 
-.output-container {
+.output-container,
+.money-container,
+.input-container,
+.calc-container {
   display: grid;
   width: 98%;
   min-height: 100%;
-  grid-template-columns: 60% auto;
-  grid-template-rows: 2rem 2rem 2rem 2rem 2rem;
   grid-gap: 0.5rem;
+  border: 2px solid var(--light-border);
+  border-radius: 5px;
+  padding: 0.5rem;
+  background-color: var(--light-background);
+}
+
+.output-container {
+  grid-template-columns: 60% auto;
+  grid-template-rows: 3rem 3rem 3rem 3rem 3rem;
+}
+
+.money-container {
+  grid-template-columns: 60% auto;
+  grid-template-rows: 3rem 3rem;
+}
+
+.input-container {
+  grid-template-columns: 60% auto;
+  grid-template-rows: 3rem 3rem 3rem 3rem 3rem;
+}
+
+.calc-container {
+  margin: 0 !important;
+}
+.outside-container > .output:nth-of-type(2) {
+  grid-row: span 3;
 }
 
 .item.output {
@@ -61,7 +90,6 @@ body {
 }
 
 .output {
-  grid-row: span 7;
   min-height: 100%;
 }
 
@@ -73,7 +101,7 @@ body {
   color: var(--green);
 }
 
-item:first-child {
+.item:first-child {
   align-self: center;
 }
 
