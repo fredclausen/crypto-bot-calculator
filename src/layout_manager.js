@@ -196,9 +196,8 @@ export class LayoutManager {
       console.error("No value to set");
       return;
     }
-
     try {
-      $(`.${element}`).val(value);
+      $(`#${element}`).val(value);
     } catch (e) {
       console.error("Element not found");
       console.error(e);
@@ -212,7 +211,7 @@ export class LayoutManager {
     }
 
     try {
-      $(`.${element}`).html(html);
+      $(`#${element}`).html(html);
     } catch (e) {
       console.error("Element not found");
       console.error(e);
