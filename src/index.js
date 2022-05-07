@@ -51,6 +51,7 @@ function createWindow() {
     height: height,
     minWidth: minWidth,
     minHeight: minHeight,
+    title: "Crypto Bot Calculator",
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: true,

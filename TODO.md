@@ -1,7 +1,8 @@
 # List of TODOs
 
-* TODO: See about getting jQuery actually working, and move everything to jQuery instead
 * Webpack to make everything smaller
-* Show a graph, or list maybe, of all SOs for the bot
+* Show a graph and list of all SOs for the bot
 * Allow multiple bot setup parameters (SO size etc)
-* Add in a manual DCA calculator (ie, to simulate the "Add Funds button)
+* Add in a manual DCA calculator (ie, to simulate the "Add Funds" button)
+* Icon
+* "Ledger" functionality (ie, input coin, amt, avg buy) and be able to update and calc DCA
