@@ -24,7 +24,6 @@ export class LayoutManager {
   }
 
   on_input_element_dblclck(ID) {
-    console.log(ID);
     $(ID).select();
     $(ID).focus();
   }
