@@ -3,7 +3,7 @@ import { Cash } from "./cash.js";
 import { calculate_data } from "./calculate_data.js";
 import { element_ids } from "./data_structs.js";
 import { get_settings, save_settings } from "./front_end_settings.js";
-
+import $ from "./jquery_init.js";
 export class LayoutManager {
   // the constructor
   separator = this.getDecimalSeparator();
@@ -198,7 +198,7 @@ export class LayoutManager {
     }
 
     try {
-      document.getElementById(element).value = value;
+      $(`.${element}`).val(value);
     } catch (e) {
       console.error("Element not found");
       console.error(e);
@@ -212,7 +212,7 @@ export class LayoutManager {
     }
 
     try {
-      document.getElementById(element).innerHTML = html;
+      $(`.${element}`).html(html);
     } catch (e) {
       console.error("Element not found");
       console.error(e);
@@ -332,12 +332,12 @@ export class LayoutManager {
   }
 
   set_element_green(element) {
-    document.getElementById(element).classList.remove("red");
-    document.getElementById(element).classList.add("green");
+    $(`.${element}`).removeClass("red");
+    $(`.${element}`).addClass("green");
   }
 
   set_element_red(element) {
-    document.getElementById(element).classList.remove("green");
-    document.getElementById(element).classList.add("red");
+    $(`.${element}`).removeClass("green");
+    $(`.${element}`).addClass("red");
   }
 }
