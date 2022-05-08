@@ -1,7 +1,7 @@
-export async function get_settings() {
+export const get_settings = async () => {
   return await window.electronAPI.getsettings();
-}
+};
 
-export function save_settings(settings) {
+export const save_settings = (settings) => {
   window.electronAPI.savesettings(settings);
-}
+};
