@@ -299,7 +299,7 @@ export class LayoutManager {
   set_amount_per_bot() {
     this.set_element_html(
       element_ids.cashusedperbot,
-      this.bot_manager.get_bot_usage()
+      "$" + this.bot_manager.get_bot_usage()
     );
   }
 
