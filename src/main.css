@@ -78,8 +78,16 @@ body {
 }
 
 .calc-container {
-  margin: 0 !important;
+  grid-template-columns: 100%;
+  grid-template-rows: 3rem calc(100% - 3rem);
 }
+
+.calc-output {
+  min-height: 98%;
+  align-items: flex-start;
+  padding-top: 0.5rem;
+}
+
 .outside-container > .output:nth-of-type(2) {
   grid-row: span 3;
 }
