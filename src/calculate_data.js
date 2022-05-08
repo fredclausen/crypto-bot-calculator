@@ -33,13 +33,34 @@ export const calculate_data = {
       }
     }
 
-    var safety_order_usage = 0.0;
-    var previous_safety_order = safety_order_size;
+    let safety_order_usage = 0.0;
+    let previous_safety_order = safety_order_size;
     for (let i = 1; i <= max_safety_orders; i++) {
       safety_order_usage += previous_safety_order;
       previous_safety_order *= safety_order_scaling;
     }
     return this.normalize_numbers(base_order_size + safety_order_usage);
+  },
+
+  list_of_safety_orders: function (
+    safety_order_size,
+    safety_order_scaling,
+    max_safety_orders
+  ) {
+    for (let arg of arguments) {
+      if (arg === undefined || arg === null || arg < 0) {
+        return 0;
+      }
+    }
+
+    let safety_orders = [];
+    let previous_safety_order = safety_order_size;
+    for (let i = 1; i <= max_safety_orders; i++) {
+      safety_orders.push(previous_safety_order);
+      previous_safety_order *= safety_order_scaling;
+    }
+
+    return safety_orders;
   },
 
   extra_bots(total_cash = 0.0, amount_per_bot = 0.0, total_bots = 0) {
